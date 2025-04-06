@@ -2,18 +2,22 @@ import time
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import torchvision
+import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
 
-from tqdm import tqdm
 from torch.utils.data import DataLoader
 from torchvision.models import resnet18
 
+LOCAL = True
+CPU = False
+
 torch.set_num_threads(2)  # Control PyTorch thread pool
 
-# device = torch.device("cpu") # For a comparison (for local runs)
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+if CPU:
+    device = torch.device("cpu") # For a comparison (for local runs)
+else:
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
 
 transform_train = transforms.Compose([
@@ -30,12 +34,12 @@ transform_test = transforms.Compose([
 
 # Load CIFAR-10 dataset
 print("Loading datasets...")
-trainset = torchvision.datasets.CIFAR10(
+trainset = datasets.CIFAR10(
     root='./data', train=True, download=True, transform=transform_train)
 trainloader = DataLoader(
     trainset, batch_size=128, shuffle=True, num_workers=2, pin_memory=True)
 
-testset = torchvision.datasets.CIFAR10(
+testset = datasets.CIFAR10(
     root='./data', train=False, download=True, transform=transform_test)
 testloader = DataLoader(
     testset, batch_size=100, shuffle=False, num_workers=2, pin_memory=True)
@@ -66,7 +70,12 @@ def train_model(epochs):
         running_loss = 0.0
         epoch_start_time = time.time()
         
-        for data in tqdm(trainloader):
+        if LOCAL:
+            from tqdm import tqdm
+            data_iterator = tqdm(trainloader)
+        else: 
+            data_iterator = trainloader
+        for data in data_iterator:
             inputs, labels = data[0].to(device), data[1].to(device)
             optimizer.zero_grad()
             outputs = model(inputs)
@@ -114,27 +123,6 @@ def evaluate_model():
     print(f'Accuracy on test images: {accuracy:.2f}%')
     return accuracy
 
-# Class-wise accuracy
-def class_accuracy():
-    model.eval()
-    class_correct = [0 for _ in range(10)]
-    class_total = [0 for _ in range(10)]
-    
-    with torch.no_grad():
-        for data in testloader:
-            images, labels = data[0].to(device), data[1].to(device)
-            outputs = model(images)
-            _, predicted = torch.max(outputs, 1)
-            c = (predicted == labels).squeeze()
-            
-            for i in range(4, labels.size(0)):  # Get stats for 4 classes at a time
-                label = labels[i]
-                class_correct[label] += c[i].item()
-                class_total[label] += 1
-
-    for i in range(10):
-        print(f'Accuracy of {classes[i]}: {100 * class_correct[i] / class_total[i]:.2f}%')
-
 # Plot training progress
 def plot_results(losses, accuracies):
     plt.figure(figsize=(12, 5))
@@ -154,13 +142,6 @@ def plot_results(losses, accuracies):
     plt.savefig('training_results.png')
     plt.close()
 
-# Train the model
-losses, accuracies = train_model(epochs=3)
-
-# Plot results
-plot_results(losses, accuracies)
-
-# Get class-wise accuracy
-class_accuracy()
-
+losses, accuracies = train_model(epochs=5) # Train the model
+plot_results(losses, accuracies) # Plot results
 print("Example completed successfully!")
