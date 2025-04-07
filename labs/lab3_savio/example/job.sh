@@ -32,7 +32,6 @@
 module load python
 module load ml/pytorch
 module load cuda
-pip install tqdm
 
 python cifar10_example.py
 

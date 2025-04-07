@@ -2,4 +2,4 @@
 .ipynb_checkpoint/
 labs/lab3_savio/example/data/*
 *.pth
-training_results.png
+training*.png

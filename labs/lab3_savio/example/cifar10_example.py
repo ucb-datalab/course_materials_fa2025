@@ -42,7 +42,7 @@ trainloader = DataLoader(
 testset = datasets.CIFAR10(
     root='./data', train=False, download=True, transform=transform_test)
 testloader = DataLoader(
-    testset, batch_size=100, shuffle=False, num_workers=2, pin_memory=True)
+    testset, batch_size=128, shuffle=False, num_workers=2, pin_memory=True)
 
 # CIFAR-10 classes
 classes = ('plane', 'car', 'bird', 'cat', 'deer',
@@ -61,13 +61,14 @@ optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9, weight_decay=5e
 # Training function
 def train_model(epochs):
     best_acc = 0.0
-    train_losses, test_accs = [], []
+    train_losses, validation_losses, test_accs = [], [], []
     training_start_time = time.time()
     
     print("Starting training...")
     for epoch in range(epochs):
         model.train()
-        running_loss = 0.0
+        running_loss = 0
+        total = 0
         epoch_start_time = time.time()
         
         if LOCAL:
@@ -82,14 +83,15 @@ def train_model(epochs):
             loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
-            
+            total += labels.size(0)            
             running_loss += loss.item()
 
         # Save the loss after each epoch
-        train_losses.append(running_loss)
+        train_losses.append(running_loss/total)
         
         # Evaluate on test set after each epoch
-        accuracy = evaluate_model()
+        validation_loss, accuracy = evaluate_model()
+        validation_losses.append(validation_loss)
         test_accs.append(accuracy)
         
         # Save model if it's the best so far
@@ -103,13 +105,14 @@ def train_model(epochs):
     print(f'Finished Training! Best accuracy: {best_acc:.2f}%')
     training_time = time.time() - training_start_time
     print(f'Training completed in {training_time:.2f} seconds')
-    return train_losses, test_accs
+    return train_losses, validation_losses, test_accs
 
 # Evaluation function
 def evaluate_model():
     model.eval()
     correct = 0
     total = 0
+    loss = 0
     
     with torch.no_grad():
         for data in testloader:
@@ -118,30 +121,34 @@ def evaluate_model():
             _, predicted = torch.max(outputs.data, 1)
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
+            loss += criterion(outputs, labels).item()
 
     accuracy = 100 * correct / total
+    loss /= total
     print(f'Accuracy on test images: {accuracy:.2f}%')
-    return accuracy
+    return loss, accuracy
 
 # Plot training progress
-def plot_results(losses, accuracies):
+def plot_results(training_losses, validation_losses, accuracies):
     plt.figure(figsize=(12, 5))
     
     plt.subplot(1, 2, 1)
-    plt.plot(losses)
+    plt.plot(training_losses, label='Training')
+    plt.plot(validation_losses, label='Validation')
     plt.title('Training Loss')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
+    plt.legend()
     
     plt.subplot(1, 2, 2)
     plt.plot(accuracies)
     plt.title('Test Accuracy')
     plt.xlabel('Epoch')
     plt.ylabel('Accuracy (%)')
-    
+
     plt.savefig('training_results.png')
     plt.close()
 
-losses, accuracies = train_model(epochs=5) # Train the model
-plot_results(losses, accuracies) # Plot results
+training_losses, validation_losses, accuracies = train_model(epochs=5) # Train the model
+plot_results(training_losses, validation_losses, accuracies) # Plot results
 print("Example completed successfully!")
