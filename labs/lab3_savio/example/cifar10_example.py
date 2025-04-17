@@ -94,7 +94,7 @@ def train_model(epochs):
         validation_losses.append(validation_loss)
         test_accs.append(accuracy)
         
-        # Save model if it's the best so far
+        # Save model if it's the best so far, you can also save at the end of training
         if accuracy > best_acc:
             best_acc = accuracy
             torch.save(model.state_dict(), 'best_cifar10_model.pth')
