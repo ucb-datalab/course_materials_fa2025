@@ -1,4 +1,4 @@
-# AY 128/256 Course Materials - Spring 2025
+# AY 128/256 Course Materials - Fall 2025
 
 This is the main GitHub repository for the course materials of AY 128 (Astronomy Data Science Lab) at UC Berkeley.
 
@@ -14,7 +14,7 @@ For those enrolled in the course, you can head over to [astro.datahub.berkeley.e
 Then, open a Terminal window and clone this repo:
 
  ```
- git clone https://github.com/ucb-datalab/course_materials_sp2025.git
+ git clone https://github.com/ucb-datalab/course_materials_fa2025.git
  ```
 
 ### Local Environment
@@ -26,13 +26,13 @@ You may wish to work directly from your laptop. To do so:
    2. Clone this repo: 
    
  ```
- git clone https://github.com/ucb-datalab/course_materials_sp2025.git
+ git clone https://github.com/ucb-datalab/course_materials_fa2025.git
  ```
 
   3. Install the python packages
 
  ```
- cd course_materials_sp2025
+ cd course_materials_fa2025
  mamba env create -f environment.yml
  ```
  
@@ -51,7 +51,7 @@ You may wish to work directly from your laptop. To do so:
  git pull
  ```
  
-Periodically in the `course_materials_sp2025` directory. If you've edited a file that is due to be changed, this can cause conflicts. Doing a `git stash` before the `pull` should help. But to avoid this, consider making a copy of any repo file you'd like to edit.
+Periodically in the `course_materials_fa2025` directory. If you've edited a file that is due to be changed, this can cause conflicts. Doing a `git stash` before the `pull` should help. But to avoid this, consider making a copy of any repo file you'd like to edit.
 
  
  
