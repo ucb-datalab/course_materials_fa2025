@@ -3,3 +3,5 @@
 labs/lab3_savio/example/data/*
 *.pth
 training*.png
+.DS_Store
+__pycache__/
