@@ -1,0 +1,1 @@
+{"duration": 0.7944948673248291, "input_args": {"q": "' -- Get some nearby sources\\n        SELECT top 1000 \\n            ra,dec,source_id,parallax,pm\\n        FROM gaiadr3.gaia_source \\n        WHERE parallax_over_error > 15.0\\n            AND parallax > 200.0\\n        ORDER BY parallax DESC'"}}
