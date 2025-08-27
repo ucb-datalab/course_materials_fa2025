@@ -34,6 +34,8 @@ You may wish to work directly from your laptop. To do so:
  ```
  cd course_materials_fa2025
  mamba env create -f environment.yml
+ pip install --no-deps -r requirements.txt
+ pip install -r requirements_deps.txt
  ```
  
   4. Activate the conda environment and install the kernel for Jupyter notebooks:
