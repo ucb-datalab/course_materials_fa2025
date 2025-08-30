@@ -34,6 +34,7 @@ You may wish to work directly from your laptop. To do so:
  ```
  cd course_materials_fa2025
  mamba env create -f environment.yml
+ conda activate astrods
  pip install --no-deps -r requirements.txt
  pip install -r requirements_deps.txt
  ```
@@ -53,7 +54,7 @@ You may wish to work directly from your laptop. To do so:
  git pull
  ```
  
-Periodically in the `course_materials_fa2025` directory. If you've edited a file that is due to be changed, this can cause conflicts. Doing a `git stash` before the `pull` should help. But to avoid this, consider making a copy of any repo file you'd like to edit.
+Periodically in the `course_materials_fa2025` directory. If you've edited a file that is due to be changed, this can cause conflicts. Doing a `git stash` before the `pull` should help. But to avoid this, consider making a copy of any repo file you'd like to edit. 
 
  
  
