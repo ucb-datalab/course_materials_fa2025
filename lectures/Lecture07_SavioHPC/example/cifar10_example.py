@@ -1,6 +1,7 @@
 import time
 import torch
 import torch.nn as nn
+from tqdm import tqdm
 import torch.optim as optim
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
@@ -66,7 +67,7 @@ def train_model(epochs):
         epoch_start_time = time.time()
         
         data_iterator = trainloader
-        for data in data_iterator:
+        for data in tqdm(data_iterator):
             inputs, labels = data[0].to(device), data[1].to(device)
             optimizer.zero_grad()
             outputs = model(inputs)
@@ -139,6 +140,6 @@ def plot_results(training_losses, validation_losses, accuracies):
     plt.savefig('training_results.png')
     plt.close()
 
-training_losses, validation_losses, accuracies = train_model(epochs=5) # Train the model
+training_losses, validation_losses, accuracies = train_model(epochs=1) # Train the model
 plot_results(training_losses, validation_losses, accuracies) # Plot results
 print("Example completed successfully!")

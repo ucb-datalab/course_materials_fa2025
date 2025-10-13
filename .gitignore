@@ -1,7 +1,9 @@
 .virtual_documents/
-.ipynb_checkpoint/
-labs/lab3_savio/example/data/*
+.ipynb_checkpoints/
+lectures/Lecture09_SavioHPC/example/data/*
+
 *.pth
 training*.png
 .DS_Store
 __pycache__/
+office_hours/
